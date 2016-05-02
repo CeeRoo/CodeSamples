@@ -3,7 +3,7 @@ Sites in WordPress::
 * www.relnei.org (responsive)
 * www.wheatoncollege.edu/giving (responsive)
 * www.brainshark.com (pilot)
-* www.interactivestem.com
+* www.interactivestem.org
 
 LAMP
 * http://my.solidworks.com
