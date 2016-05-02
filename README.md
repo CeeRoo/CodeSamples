@@ -1,11 +1,11 @@
 # Code Samples
-Sites in WordPress::
+Sites in WordPress:
 * www.relnei.org (responsive)
 * www.wheatoncollege.edu/giving (responsive)
 * www.brainshark.com (pilot)
 * www.interactivestem.org
 
-LAMP
+LAMP:
 * http://my.solidworks.com
 
 Here are some of my coding examples:
