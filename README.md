@@ -8,7 +8,7 @@ Sites in WordPress:
 LAMP:
 * http://my.solidworks.com
 
-Here are some of my coding examples:
+These are the files in this repo representing some of my coding examples:
 
 * **D3-WP-slope.js:** Javascript I wrote to integrate data visualization using the WordPress D3 plugin and create a slopegraph based on a user-supplied CSV of data.
 * **widget-all-news.php:** WordPress PHP widget I wrote to dynamically build a CSS hover widget that displays associated PDFs based on the current page 
