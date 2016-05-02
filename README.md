@@ -1,4 +1,4 @@
-# CodeSamples
+# Code Samples
 
 Here are some of my coding examples:
 
