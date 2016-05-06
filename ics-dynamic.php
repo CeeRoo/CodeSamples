@@ -2,7 +2,7 @@
 /*
 Plugin Name: ICS Dynamic links
 Plugin URI: http://www.relnei.com	
-Description: This plugin will create a dynamic ICS file based on event information so that users can download into their calendars.
+Description: This plugin will create a dynamic ICS file based on event information so that users can download into their calendar clients (Outlook, gmail, Mac Mail, etc.).
 Author: Chris Rousseau
 Version: 1.2
 Author URI: http://www.relnei.com
@@ -190,9 +190,11 @@ function create_ics($eventid) {
             
             if ($logintext != '') {
                 
-                // So newline \n is interpreted as part of the content and not the ICS end of line, must 
-                // escape the new line with another \. Also, the space in front and end must be there or .
-                // logintext will not show up in iCalendar
+                /************************************
+                 * So newline \n is interpreted as part of the content and not the ICS end of line, must 
+                 * escape the new line with another \. Also, the space in front and end must be there or 
+                 * logintext will not show up in iCalendar
+                 */
                 $description = $briefdesc . " \\n\\n ". $logintext;
 
             }

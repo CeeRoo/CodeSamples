@@ -2,6 +2,9 @@
  *  D3 slopegraph - EDC.
  *  by Chris Rousseau 
  *  
+ *  Produce a two-column slopegraph with D3 dynamically
+ *  given a CSV file of education data.
+ *
  *  Note the viz select area corresponds to the D3-WP plugin selection
  *  in the dash editor.
  */
@@ -27,7 +30,7 @@ var viz = d3.select(".wpd3-16001-0")
                 .attr('width', WIDTH+50);
 
 
-/********************
+/**
  * Read in .csv rows and find min and max. There are two columns so
  * need to combine
  */
@@ -36,7 +39,7 @@ d3.csv('/wp-content/uploads/2016/02/slopechart-ref.csv', function(rows) {
   MinMax = getMinMax(rows);
   data = rows;
   
-  /******************
+  /**
    * D3 is synchronous so functions outside of this callback
    * block get executed before callback is done. So, if setting
    * MinMax here and reference the var outside
@@ -55,7 +58,7 @@ d3.csv('/wp-content/uploads/2016/02/slopechart-ref.csv', function(rows) {
   // Add scaled Y coordinates for both left and right data file values
   data = buildYScales(data);
   
-  /*************************************
+  /**
    * Build new temp array that has one row per data coordinate. Thus,
    * this will have twice as many elements. The reason for this is in 
    * case of data collision. With two similar data points, want to make
@@ -71,7 +74,7 @@ d3.csv('/wp-content/uploads/2016/02/slopechart-ref.csv', function(rows) {
    */
   finalData = preProcessSlope(data);
   
-  /***************************************
+  /**
    * SVG heading above the data
    */
     viz.append('svg:line')
@@ -96,7 +99,7 @@ d3.csv('/wp-content/uploads/2016/02/slopechart-ref.csv', function(rows) {
 	    .text('Did Not Participate')
 	    .attr('font-variant', 'small-caps')
   
-  /*************************************
+  /**
    * We now have pre-processed all the data
    * Now, let's draw the graph with D3.
    * 
@@ -195,7 +198,7 @@ d3.csv('/wp-content/uploads/2016/02/slopechart-ref.csv', function(rows) {
 
 }); // end d3 function
 
-/********************
+/**
  * Read in rows and find min and max. There are two columns so
  * need to combine
  * 
@@ -234,7 +237,7 @@ function getMinMax(rows) {
   
 }
 
-/********************
+/**
  * set yScale to a domain and range.
  * need to combine
  */
@@ -251,7 +254,7 @@ function getYScale(d,i){
 }
 
 function buildYScales(d) {
-/*****************************
+/**
  * Add yScale_left_coord, yScale_right_coord properties to existing data array
  * 
  * INPUT:  ARRAY of data file(3 elements): label, P(participated), DNP(did not participated)
@@ -266,30 +269,30 @@ function buildYScales(d) {
 }
 
 function preProcessSlope(d) {
-/***************************
-  Build new temp array that has one row per data coordinate. Thus,
-  this will have twice as many rows as the data file. 
-  
-  The reason for this is in case of data collision. 
-  
-  With two similar data points, want to make
-  sure that visually, they do not overlap. If the data points are close,
-  then the subsequent data coordinates all need to be adjusted. 
-  
-  The new temp array is sorted by data file value descending so that we work from the 
-  tallest vertical value down to the shortest. When adjusting, we ADD
-  to the scaled Y coordinate. Since Y of 0 is the vertical top, the higher the Y
-  value, the LOWER the point appears visually on the graph. The higher
-  the scaled Y value, the lower the point appears on the graph. This is
-  inverse to the data file value. The smallest data file value will
-  have the highest scaled Y value. 
-
- INPUT: 
-    - ARRAY of objects, each obj with 5 elems (added left and right Y scaled coordinates)
- OUTPUT: 
-    - ARRAY of objects, final pre-processed data with adjusted left and Y scales after
-     determining visual data collisions)
-*/
+/**
+ *  Build new temp array that has one row per data coordinate. Thus,
+ * this will have twice as many rows as the data file. 
+ * 
+ * The reason for this is in case of data collision. 
+ * 
+ * With two similar data points, want to make
+ * sure that visually, they do not overlap. If the data points are close,
+ * then the subsequent data coordinates all need to be adjusted. 
+ * 
+ * The new temp array is sorted by data file value descending so that we work from the 
+ * tallest vertical value down to the shortest. When adjusting, we ADD
+ * to the scaled Y coordinate. Since Y of 0 is the vertical top, the higher the Y
+ * value, the LOWER the point appears visually on the graph. The higher
+ * the scaled Y value, the lower the point appears on the graph. This is
+ * inverse to the data file value. The smallest data file value will
+ * have the highest scaled Y value. 
+ *
+ * INPUT: 
+ *   - ARRAY of objects, each obj with 5 elems (added left and right Y scaled coordinates)
+ * OUTPUT: 
+ *   - ARRAY of objects, final pre-processed data with adjusted left and Y scales after
+ *    determining visual data collisions)
+ */
 
     var font_size = 15;
     
@@ -297,9 +300,11 @@ function preProcessSlope(d) {
     var right = [];
     var datarow;
     
-    // Build two arrays for left and right sides. Then combine into one array
-    // and sort by the data file values descending. Then figure out if there
-    // are collisions. If data points are too close, re-adjust the Y scales   
+    /** 
+     * Build two arrays for left and right sides. Then combine into one array
+     * and sort by the data file values descending. Then figure out if there
+     * are collisions. If data points are too close, re-adjust the Y scales   
+     */
     for (var i=0; i<d.length; i++ ) {
         
         // datarow is row from csv data file
@@ -310,7 +315,7 @@ function preProcessSlope(d) {
         leftval = datarow.P;
         rightval = datarow.DNP;
         
-        /****************************
+        /**
          * Push/append OBJECT to left and right arrays. In the push parameters,
          * we are defining the property names and values via object braces{}. 
          * 
@@ -340,7 +345,7 @@ function preProcessSlope(d) {
     var both;
     both = left.concat(right);
     
-    /*************************
+    /**
      * Sort from low to high, then reverse so array is sorted 
      * descending by data file value. Need to reference the
      * property value name, in this case, dataval.
@@ -361,7 +366,7 @@ function preProcessSlope(d) {
 		}
 	}).reverse();
     
-    /***********************************
+    /**
      * Create object literal to temporarily store an object OF objects
      * for each category. The coordinates for each are going to be 
      * re-calculated in case of data collisions. Then we will move the object
@@ -372,7 +377,7 @@ function preProcessSlope(d) {
     var label, side, dataval, yScaleCoord;
     var font_size = 15;
     
-    /************************************
+    /**
      * Both contains one row per data file point. For each row, we need to
      * compare the coordinates with the prior row to test for a display
      * collision. We build the new_data object as we go, so that only
@@ -392,7 +397,7 @@ function preProcessSlope(d) {
         
         new_data[label][side] = dataval;
         
-        /********************************************
+        /**
          * Here's the collision processing.
          * 
          * Compare the yScaled value with the prior coordinate. The prior
@@ -406,7 +411,7 @@ function preProcessSlope(d) {
                 // THERE WAS A COLLISION!
                 new_data[label][side + '_coord'] = yScaleCoord + font_size;
                 
-                /*********************************
+                /**
                  * Because there was a collision, every successive data
                  * point (again, moving from top to bottom), now needs to be 
                  * re-adjusted by the same amount ->font_size
@@ -419,7 +424,7 @@ function preProcessSlope(d) {
                 new_data[label][side + '_coord'] = yScaleCoord;
             }
             
-            /*********************************************
+            /**
              * Now, we need to ensure that if there is a data point on the left
              * and the right sides with the same data file value, e.g. 64, that
              * visually, these have the SAME yScaled coordinate. The above 
@@ -442,7 +447,7 @@ function preProcessSlope(d) {
         
     }// for both loop
     
-    /***************************************
+    /**
      * new_data is now an Object of Objects.
      * Let's now transfer that to the FINAL array of objects
      * that will be used for the D3 SVG processing

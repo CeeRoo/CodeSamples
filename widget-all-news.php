@@ -1,6 +1,6 @@
 <?php
 /***************************************
- *	MOD:
+ *	
  *	Custom widget to display associated alliance research image in sidebar
  *	
  */	
@@ -24,7 +24,7 @@ class Alliance_Newsletter extends WP_Widget {
 		
         global $post;
         
-        /**************************  
+        /** 
          *   For Main Alliance page and sign up form,  
          *   do not show Newsletter widget
          */
@@ -44,13 +44,11 @@ class Alliance_Newsletter extends WP_Widget {
 			
             $signuplink = 'alliance-sign.html';
             
-            /*****************************
+            /**
              * Get dynamic newsletter for each Alliance. Alliances can
              * have children pages like the Core Planning Group so for 
              * all children within an alliance display the apropos
-             * newsletter. Example: NCCRA is page 262, but CPG page
-             * for NCCRA is different page id. So can't just check 
-             * the page id. Must also check the parent id.
+             * newsletter. 
              */
             $newsletterParent = 262;
             
@@ -142,9 +140,8 @@ class Alliance_Newsletter extends WP_Widget {
             echo        '<div class="wij-top">';
            
                     echo    '<p class="title">Newsletter and Flyer</p>';
-
                     echo    '<h3><a href="' .$pdfPath.'" class="trackNewsletter">'.$titletext.'</a></h3>';
-                     echo    '<h3><a href="' .$flyerPath.'" class="trackNewsletter">'.$flyertext.'</a></h3>';
+                    echo    '<h3><a href="' .$flyerPath.'" class="trackNewsletter">'.$flyertext.'</a></h3>';
 
             echo        '</div>'; // wij-top end
             echo        '<div class="wij-footer">';

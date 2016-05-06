@@ -1,6 +1,6 @@
 <?php
 /***************************************
- *	MOD:
+ *	
  *	Custom widget to display the most recent active Publication.
  *	
  */	
@@ -21,6 +21,7 @@ class Publications extends WP_Widget {
 	 * Front-end display of widget.
 	 */
 	public function widget( $args, $instance ) {
+		
 		extract( $args );
 		$reltype = apply_filters( 'widget_reltype', $instance['reltype'] );
 		global $post;
@@ -90,16 +91,20 @@ class Publications extends WP_Widget {
 	 				// No loop, just one row returned
                     $row = mysql_fetch_assoc($r1);      
 
-	    			// Set Category values. Value is a string (of a numeric)
-	                // inside a serialized array in the DB per Advanced
-	                // Custom Fields
+	    			/**
+	    			 * Set Category values. Value is a string (of a numeric)
+	                 * inside a serialized array in the DB per Advanced
+	                 * Custom Fields.
+	                 */
 	                $effective_teachers = '"1"';
 	                $low_performing_schools = '"2"';
 	                $educational_equity = '"3"';
 	                $college_careers = '"4"';
 
-	                // Set alliance priority down 1 digit because jquery
-	                // 'active' parameter starts at 0. 
+	                /**
+	                 * Set alliance priority down 1 digit because jquery
+	                 * 'active' parameter starts at 0.
+	                 */ 
 	 				if (stripos($row['thepriority'], $effective_teachers)) {
 	 					$alliance_priority = 0;
 	 				}
@@ -115,7 +120,6 @@ class Publications extends WP_Widget {
 					
 			}
 
-			// code here
  			$q = "SELECT 
                    	post_content,post_title,ID,meta_key,meta_value 
                 FROM 
@@ -134,7 +138,6 @@ class Publications extends WP_Widget {
 				LIMIT 1
 				";
 
-			//echo $q;
 			$r = mysql_query ("$q"); 
 			$rs=array();
 			$i=0;
