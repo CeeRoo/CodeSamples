@@ -2,8 +2,9 @@
 Sites in WordPress/PHP:
 * www.relnei.org (WordPress, responsive)
 * www.wheatoncollege.edu/giving (WordPress, responsive)
-* www.brainshark.com (WordPress pilot, responsive)
 * www.interactivestem.org (WordPress)
+* www.brainshark.com (WordPress pilot, responsive)
+* www.beaconservices.com (WordPress)
 * http://my.solidworks.com (LAMP)
 
 These are the files in this repo representing some of my coding examples:
