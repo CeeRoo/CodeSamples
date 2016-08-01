@@ -2,6 +2,7 @@
 Sites in WordPress/PHP:
 * www.relnei.org (WordPress, responsive)
 * www.wheatoncollege.edu/giving (WordPress, responsive)
+* www.americanwell.com (WordPress, responsive)
 * www.interactivestem.org (WordPress)
 * www.brainshark.com (WordPress pilot, responsive)
 * www.beaconservices.com (WordPress)
