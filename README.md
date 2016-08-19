@@ -4,7 +4,7 @@ Sites in WordPress/PHP:
 * www.wheatoncollege.edu/giving (WordPress, responsive)
 * www.americanwell.com (WordPress, responsive)
 * www.interactivestem.org (WordPress)
-* www.brainshark.com (WordPress pilot, responsive)
+* www.brainshark.com (WordPress pilot, responsive, since converted to Drupal)
 * www.beaconservices.com (WordPress)
 * http://my.solidworks.com (LAMP)
 
