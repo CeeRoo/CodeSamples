@@ -26,7 +26,7 @@ class Publications extends WP_Widget {
 		$reltype = apply_filters( 'widget_reltype', $instance['reltype'] );
 		global $post;
 		
-		//find out which region this is
+		//Find out which region this is
 		$ptitle='';
 		$l2id= getLevel2ID();
 		$stext='';
@@ -37,12 +37,12 @@ class Publications extends WP_Widget {
 			$stext=' '; 
 		}
 		
-		// priority areas
+		// Priority areas
 		if($post->ID==12) { 
 			$stext="AND M.meta_key='eventpriorities'"; 
 		}
 		
-		// alliances
+		// Alliances
 		if($post->ID==22) { 
 			$stext="AND M.meta_key='eventalliances'"; 
 		}
