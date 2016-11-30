@@ -122,7 +122,7 @@ function create_ics($eventid) {
             // Get timezone (allow for EDT, EST)
             $thetimezone = trim(substr(trim($timestring), $commapos+1, 4));
 
-            /*
+            /**
              *  Defaults for ET, EST, EDT time zones
              */
 
@@ -190,8 +190,8 @@ function create_ics($eventid) {
             
             if ($logintext != '') {
                 
-                /************************************
-                 * So newline \n is interpreted as part of the content and not the ICS end of line, must 
+                /**
+                 * Newline \n is interpreted as part of the content and not the ICS end of line, must 
                  * escape the new line with another \. Also, the space in front and end must be there or 
                  * logintext will not show up in iCalendar
                  */
@@ -212,11 +212,11 @@ function create_ics($eventid) {
         echo "BEGIN:VCALENDAR\n";
         echo "VERSION:2.0\n";
         echo "PRODID:-//relnei.org//NONSGML {$title} //EN\n";
-        echo "METHOD:REQUEST\n"; // required by Outlook
+        echo "METHOD:REQUEST\n"; // Required by Outlook
         echo "BEGIN:VTIMEZONE\n";
         echo "TZID:{$TZID}\n";
-        echo "X-ENTOURAGE-TZID:{$ENTOURAGE_TZID}\n"; //required by Outlook
-        echo "X-ENTOURAGE-CFTIMEZONE:{$ENTOURAGE_CFTIMEZONE}\n"; //required by Outlook
+        echo "X-ENTOURAGE-TZID:{$ENTOURAGE_TZID}\n"; //Required by Outlook
+        echo "X-ENTOURAGE-CFTIMEZONE:{$ENTOURAGE_CFTIMEZONE}\n"; //Required by Outlook
         echo "BEGIN:STANDARD\n";
         echo "DTSTART:20161101T020000\n"; //This value is not for the meeting. It is the beginning date of the current year when standard time started. 
         echo "TZOFFSETFROM:{$TZOFFSETFROM_standard}\n";
@@ -234,8 +234,8 @@ function create_ics($eventid) {
         echo "SUMMARY:{$title}\n";
         echo "DTSTART;TZID={$TZID}:{$start}\n";
         echo "DTEND;TZID={$TZID}:{$end}\n";
-        echo "UID:".date('Ymd').'T'.date('His')."-".rand()."-relnei.org\n"; // required by Outlook
-        echo "DTSTAMP:".date('Ymd').'T'.date('His').'Z'."\n"; // required by Outlook
+        echo "UID:".date('Ymd').'T'.date('His')."-".rand()."-relnei.org\n"; // Required by Outlook
+        echo "DTSTAMP:".date('Ymd').'T'.date('His').'Z'."\n"; // Required by Outlook
         echo "BEGIN:VALARM\n";
         echo "ACTION:DISPLAY\n";
         echo "DESCRIPTION:REMINDER\n";
