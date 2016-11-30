@@ -26,7 +26,6 @@ var viz = d3.select(".wpd3-16001-0")
                 .append('svg')
                 .attr('id', 'viz')
                 .attr('height', HEIGHT+140)
-                //.style('border','1px solid red')
                 .attr('width', WIDTH+50);
 
 
@@ -41,15 +40,15 @@ d3.csv('/wp-content/uploads/2016/02/slopechart-ref.csv', function(rows) {
   
   /**
    * D3 is synchronous so functions outside of this callback
-   * block get executed before callback is done. So, if setting
+   * block get executed before the callback is done. If setting
    * MinMax here and reference the var outside
    * of this callback, it will be undefined because the code
    * outside this block will execute before the callback is done.
-   * once the request is made and before the data finishes loading which
+   * Once the request is made and before the data finishes loading which
    * is what triggers the callback. 
   
-   * So, put function in here to make sure it runs after the data
-   * is loaded. (http://stackoverflow.com/questions/9491885/csv-to-array-in-d3-js)
+   * So, put the function in here to make sure it runs after the data
+   * is loaded. 
    */
 
   // Set Visual range given domain of data in file
@@ -270,7 +269,7 @@ function buildYScales(d) {
 
 function preProcessSlope(d) {
 /**
- *  Build new temp array that has one row per data coordinate. Thus,
+ * Build new temp array that has one row per data coordinate. Thus,
  * this will have twice as many rows as the data file. 
  * 
  * The reason for this is in case of data collision. 
