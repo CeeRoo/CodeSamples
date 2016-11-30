@@ -133,22 +133,27 @@ class Alliance_Newsletter extends WP_Widget {
             
             // Display CSS hover panel widget
             echo $before_widget;
+	     ?>
 
-            echo '<div class="relnei-hov newswij">';  
-            echo    '<h2 class="longtext">Newsletter and Flyer</h2>'; 
-            echo    '<div class="mask">'; 
-            echo        '<div class="wij-top">';
-           
-                    echo    '<p class="title">Newsletter and Flyer</p>';
-                    echo    '<h3><a href="' .$pdfPath.'" class="trackNewsletter">'.$titletext.'</a></h3>';
-                    echo    '<h3><a href="' .$flyerPath.'" class="trackNewsletter">'.$flyertext.'</a></h3>';
-
-            echo        '</div>'; // wij-top end
-            echo        '<div class="wij-footer">';
-            echo                '<a href="'.$archive.'" class="wij-footerlink">View All</a>';
-            echo        '</div>'; // wij-footer end
-            echo    '</div>';  
-            echo '</div>';  
+            <div class="relnei-hov newswij"> 
+            	<h2 class="longtext">Newsletter and Flyer</h2> 
+            	<div class="mask"> 
+            		<div class="wij-top">
+                    		<p class="title">Newsletter and Flyer</p>
+				<?php
+                   		 echo    '<h3><a href="' .$pdfPath.'" class="trackNewsletter">'.$titletext.'</a></h3>';
+                   		 echo    '<h3><a href="' .$flyerPath.'" class="trackNewsletter">'.$flyertext.'</a></h3>';
+				?>
+            		</div> <!-- wij-top end -->
+            		<div class="wij-footer">
+				<?php
+            			echo	'<a href="'.$archive.'" class="wij-footerlink">View All</a>';
+				?>
+           		</div> <!-- wij-footer end -->
+            	</div><!-- mask end -->  
+            </div><!-- relnei-hov end -->
+	
+	    <?php
             echo $after_widget;
             
 		} 
