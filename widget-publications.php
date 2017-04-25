@@ -3,7 +3,7 @@
  *	
  *	Custom widget to display the most recent active Publication.
  *	
- *==================================================================/	
+ *==================================================================*/	
 class Publications extends WP_Widget {
 
 	/**
@@ -26,12 +26,12 @@ class Publications extends WP_Widget {
 		$reltype = apply_filters( 'widget_reltype', $instance['reltype'] );
 		global $post;
 		
-		//Find out which region this is
+		// Find out which region this is
 		$ptitle='';
 		$l2id= getLevel2ID();
 		$stext='';
 
-        	$post_parent = 8209;
+        $post_parent = 8209;
 
 		if($reltype=='all events') { 
 			$stext=' '; 
@@ -57,112 +57,111 @@ class Publications extends WP_Widget {
 			// If parent is the main research alliance page
 			if (wp_get_post_parent_id($post->ID_==22 )) {
 
-			// Get the priority value associated with the Alliance
-			$q1 = "
-			SELECT 
-	                   	ID,meta_key,M.meta_value as thepriority 
+				// Get the priority value associated with the Alliance
+				global $wpdb;
+
+		        $row = $wpdb->get_row(
+		            "SELECT 
+	                    ID,meta_key,meta_value as thepriority 
 	                FROM 
 	                	wp_posts P
-			JOIN 
-	                    	wp_postmeta M ON M.post_id=P.ID
-			WHERE 
-	                    	P.ID=$post->ID
+					JOIN 
+	                    wp_postmeta M ON M.post_id=P.ID
+					WHERE 
+	                    P.ID=$post->ID
 	                AND 
-	                  	M.meta_key =  'eventpriorities'
+	                  	meta_key =  'eventpriorities'
 	                AND
-	                    	P.post_status='publish'
-	                AND 	(
-	                    	CAST( M.meta_value AS CHAR ) LIKE  '%\"1\"%'
-	                    	OR
-	                    	CAST( M.meta_value AS CHAR ) LIKE  '%\"2\"%'
-	                    	OR
-	                    	CAST( M.meta_value AS CHAR ) LIKE  '%\"3\"%'	                    	     
-				)
-			";
+	                    P.post_status='publish'
+	                AND (
+	                    CAST( M.meta_value AS CHAR ) LIKE  '%\"1\"%'
+	                    OR
+	                    CAST( M.meta_value AS CHAR ) LIKE  '%\"2\"%'
+	                    OR
+	                    CAST( M.meta_value AS CHAR ) LIKE  '%\"3\"%'
+	                    OR
+	                    CAST( M.meta_value AS CHAR ) LIKE  '%\"4\"%' 
+					)",
+					ARRAY_A
+		        );      
 
-		$r1 = mysql_query ("$q1");
-	 				
-	 	// No loop, just one row returned
-                $row = mysql_fetch_assoc($r1);      
+				/**
+				 * Set Category values. Value is a string (of a numeric)
+				 * inside a serialized array in the DB per Advanced
+				 * Custom Fields.
+				 */
+				$effective_teachers = '"1"';
+				$low_performing_schools = '"2"';
+				$educational_equity = '"3"';
+				$college_careers = '"4"';
 
-		/**
-		 * Set Category values. Value is a string (of a numeric)
-		 * inside a serialized array in the DB per Advanced
-		 * Custom Fields.
-		 */
-		$effective_teachers = '"1"';
-		$low_performing_schools = '"2"';
-		$educational_equity = '"3"';
-		$college_careers = '"4"';
+				/**
+				 * Set alliance priority down 1 digit because jquery
+				 * 'active' parameter starts at 0.
+				 */ 
+				if (stripos($row->thepriority, $effective_teachers)) {
+					$alliance_priority = 0;
+				}
+				elseif (stripos($row->thepriority, $low_performing_schools)) {
+					$alliance_priority = 1;
+				}
+				elseif (stripos($row->thepriority, $educational_equity)) {
+					$alliance_priority = 2;
+				}
+				elseif (stripos($row->thepriority, $college_careers)) {
+					$alliance_priority = 3;
+				}
+						
+			} // end if wp_get_post_parent_id($post->ID_==22)
 
-		/**
-		 * Set alliance priority down 1 digit because jquery
-		 * 'active' parameter starts at 0.
-		 */ 
-		if (stripos($row['thepriority'], $effective_teachers)) {
-			$alliance_priority = 0;
-		}
-		elseif (stripos($row['thepriority'], $low_performing_schools)) {
-			$alliance_priority = 1;
-		}
-		elseif (stripos($row['thepriority'], $educational_equity)) {
-			$alliance_priority = 2;
-		}
-		elseif (stripos($row['thepriority'], $college_careers)) {
-			$alliance_priority = 3;
-		}
-					
-		}
-
- 		$q = "
-		SELECT 
-                   	post_content,post_title,ID,meta_key,meta_value 
-                FROM 
-                  	wp_posts P
-		JOIN 
- 			wp_postmeta M ON M.post_id=P.ID		
-		WHERE 
-                	P.ID!=130
+	 		$row = $wpdb->get_row(
+			 	"SELECT 
+              		post_content,post_title,ID,meta_key,meta_value 
+				FROM 
+              		wp_posts P
+				JOIN 
+                    wp_postmeta M ON M.post_id=P.ID
+				WHERE 
+                    P.ID!=130
                 AND
                 	P.post_status='publish' 
-                AND 
-                	P.post_parent=$post_parent  
-                $stext
-		ORDER BY 
-                    	post_date DESC LIMIT 1
-		";
+                AND P.post_parent=$post_parent  
+                	$stext
+				ORDER BY 
+                    post_date DESC
+				LIMIT 1
+				"
+			);
 
-		$r = mysql_query ("$q"); 
-		$rs=array();
-		$i=0;
+			if($wpdb->num_rows > 0) {
 
-		while ($row = mysql_fetch_array ($r)) {
-			$rs[$i]['ID']=$row['ID'];
-			$rs[$i]['title']=$row['post_title'];
-			$i++;
-		}
-		
-		if(count($rs)>0) {
-			echo $before_widget;
-                        ?>        
-			<div class="relnei-hov pubswij">  
-			    <h2>Publications</h2> 
-				<div class="mask"> 
-			        	<div class="wij-top">
-						<p class="title">Publications</p>
-						<?php echo '<h3><a href="/?p='.$rs[$i]['ID'].'">'.$rs[$i]['title'].'</a></h3>';?>
-					</div><!--wij-top end-->
-					<div class="wij-footer">
-						<a href="/publications.html?thepid='.$alliance_priority.'" class="wij-footerlink">View All</a> 
-					</div><!--wij-footer end-->
-				</div><!--mask end-->
-			</div><!--relnei-hov end-->
-			<?php
-			echo $after_widget;                
-                        
-			}			
-		}
-	}
+				echo $before_widget;
+	        	?> 
+
+				<div class="relnei-hov pubswij">  
+				    
+				    <h2>Publications</h2> 
+					<div class="mask"> 
+				        
+				        <div class="wij-top">
+							<p class="title">Publications</p>
+							<?php echo '<h3><a href="/?p='.$row->ID.'">'.$row->post_title.'</a></h3>';?>
+						</div>
+
+						<div class="wij-footer">
+							<?php echo '<a href="/publications.html?thepid='.$alliance_priority.'" class="wij-footerlink">View All</a>';?> 
+						</div>
+
+					</div>
+
+				</div><
+				
+				<?php
+				echo $after_widget;                
+	                        
+			} // end if($wpdb->num_rows > 0)		
+		} // end if($stext!='') 
+	} // end function
 
 	/**
 	 * Sanitize widget form values as they are saved.

@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
  *	
- *	Custom widget to display associated alliance research image in sidebar
+ *	Custom widget to display associated alliance research links in sidebar
  *	
  =============================================================================*/	
 class Alliance_Newsletter extends WP_Widget {

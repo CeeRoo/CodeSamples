@@ -2,40 +2,43 @@
 /*
 Plugin Name: ICS Dynamic links
 Plugin URI: http://www.relnei.com	
-Description: This plugin will create a dynamic ICS file based on event information so that users can download into their calendar clients (Outlook, gmail, Mac Mail, etc.).
+Description: This plugin will create a dynamic ICS file based on event information so that users can download into their calendars.
 Author: Chris Rousseau
-Version: 1.2
+Version: 1.1
 Author URI: http://www.relnei.com
 */
 
-/*-----------------------------------------------
+/*==================================================================
 |
-|   CHANGES:
+| MOD CHANGES:
+|
+| 5/5/15:
 |
 |   - Revamped the format of the output file as the Zulu time format(date with trailing 'Z') no longer
 |   was functional on PC Outlook 2010+ even though Mac Outlook displayed
 |   the event in the correct time/date. Added TZID, TZOFFSETFROM, TZOFFSETTO, X-ENTOURAGE fields
-|   as well as STANDARD and DAYLIGHT sections. (3/5/15)
+|   as well as STANDARD and DAYLIGHT sections. 
 |   
 |   - The date for the event is no longer manipulated based the time zone for the event. In the
 |   prior Zulu version, the date itself was altered to reflect the Time Zone. With the new method
 |   the date itself is static regardless of time zone, but the offsets for time zone are
-|   reflected in the TZOFFSETFROM and TZOFFSETTO parameters which are adjusted based on the 
+|   reflected in the TZOFFSETFROM and TZOFFSETTO parameters which are adjusted  based on the 
 |   time zone for the event. The user's calendar client uses these as well as their local clock
-|   to determine the correct time. (1/12/16)
+|   to determine the correct time.  
 |   
------------------------------------------------*/
+==================================================================*/
+
 /**
+ *
+ * @version : 1.0
 
-* @version : 1.2
-
-* Function : ics_tz_replace
-* Purpose : Replaces timezone value for display purposes only, e.g., 'EDT' to 'ET'
-*
-* @access public
-* @param string $datetimestring, array $tz_array
-* @return string
-**/
+ * Function : ics_tz_replace
+ * Purpose : Replaces timezone value for display purposes only, e.g., 'EDT' to 'ET'
+ *
+ * @access public
+ * @param string $datetimestring, array $tz_array
+ * @return string
+ */
 function ics_tz_replace($datetimestring,$tz_array = array("EDT", "EST")) {
     
     for($i=0; $i < count($tz_array); $i++) {
@@ -51,49 +54,63 @@ function ics_tz_replace($datetimestring,$tz_array = array("EDT", "EST")) {
     return $datetimestring;
 }
 
+/**
+ *
+ * @version : 1.0
+ * Function : create_ics
+ * Purpose : Generates a calendar ics file for the user once they register for an event. 
+ *       The ics file has been tested in gmail, Mac mail, Outlook for Mac and Windows.
+ *
+ * @access public
+ * @param int $eventid
+ * @return string
+ */
 function create_ics($eventid) {
+
+    global $wpdb;
     
-    // Get the event/ics id and get the associated event
-    if (( isset ($_GET['icsid']) && is_numeric($_GET['icsid']))) {
+    // Make sure the passed icsid is numeric before processing
+    if (( isset ($_GET['icsid']) || is_numeric($_GET['icsid']))) {
         
         $eventid = $_GET['icsid'];
         
-        // Get event information from passed id.
-        $q="SELECT 
-                * 
+        $row = $wpdb->get_row(
+            "SELECT 
+                ID, post_title 
             FROM 
                 wp_posts P
             LEFT JOIN 
                 wp_postmeta M ON P.ID=M.post_id
             WHERE 
-                P.post_status IN ('draft','publish')
+                P.post_status ='publish'
             AND 
                 M.meta_key='eventdate' 
             AND 
                 ID = ".$eventid
-	;
+        );
         
-        $r = mysql_query ("$q");       
-        
-        while ($row = mysql_fetch_array ($r)) {
+        // Build calendar file info with WordPress event information.
+        if($wpdb->num_rows > 0) {
             
             $event = array(
-                'event_name' => $row['post_title']. ' [REL Northeast and Islands]',
-                'event_description' => strip_tags(get_field('eventbrief',$row['ID'])),
-                'event_start' => str_replace('-', '',sqldate(get_field('eventdate',$row['ID']))),
-                'event_end' => str_replace('-', '',sqldate(get_field('eventdate',$row['ID']))),
+
+                'event_name' => $row->post_title. ' [REL Northeast and Islands]',
+                'event_description' => strip_tags(get_field('eventbrief',$row->ID)),
+                'event_start' => str_replace('-', '',sqldate(get_field('eventdate',$row->ID))),
+                'event_end' => str_replace('-', '',sqldate(get_field('eventdate',$row->ID)))
             );
 
             $title = $event['event_name'];
 
-            $location = get_field('eventlocation', $row['ID']);
-
+            $location = get_field('eventlocation', $row->ID);
+           
             // Get the event start and end time (one field)
-            $timestring = get_field('eventstarttime',$row['ID']);
+            $timestring = get_field('eventstarttime',$row->ID);
             
             // Divide start and end time
             $commapos = strpos($timestring, ",");
             $dashpos = strpos($timestring, "–");
+
             $endtime = substr($timestring, $dashpos+3, $commapos-$dashpos-3);
             $starttime = substr($timestring, 0, $dashpos-1);
 
@@ -122,10 +139,7 @@ function create_ics($eventid) {
             // Get timezone (allow for EDT, EST)
             $thetimezone = trim(substr(trim($timestring), $commapos+1, 4));
 
-            /**
-             *  Defaults for ET, EST, EDT time zones
-             */
-
+            // Defaults for ET, EST, EDT time zones
             $TZID = "America/New_York";
 
             $TZOFFSETFROM_standard = "-0400";
@@ -185,14 +199,16 @@ function create_ics($eventid) {
             $end = $event['event_end'] . 'T' . $icsendtime;
             
             // Description for the event
-            $briefdesc = strip_tags(get_field('eventbrief',$row['ID']));
-            $logintext = strip_tags(get_field('eventslogin',$row['ID']));
+            $briefdesc = strip_tags(get_field('eventbrief',$row->ID));
+            $logintext = strip_tags(get_field('eventslogin',$row->ID));
             
             if ($logintext != '') {
                 
                 /**
-                 * Newline \n is interpreted as part of the content and not the ICS end of line, must 
-                 * escape the new line with another \. Also, the space in front and end must be there or 
+                 * Newline \n is interpreted as part of the content 
+                 * and not the ICS end of line, so must 
+                 * escape the new line with another \. 
+                 * Also, the space in front and end must be there or .
                  * logintext will not show up in iCalendar
                  */
                 $description = $briefdesc . " \\n\\n ". $logintext;
@@ -204,49 +220,50 @@ function create_ics($eventid) {
             
             $slug = strtolower(str_replace(array(' ', "'", '.', ','), array('_', '', '', '_'), $title));
 
-        }
+            header("Content-Type: text/Calendar; charset=utf-8");
+            header("Content-Disposition: inline; filename={$slug}.ics");
 
-        header("Content-Type: text/Calendar; charset=utf-8");
-        header("Content-Disposition: inline; filename={$slug}.ics");
+            echo "BEGIN:VCALENDAR\n";
+            echo "VERSION:2.0\n";
+            echo "PRODID:-//relnei.org//NONSGML {$title} //EN\n";
+            echo "METHOD:REQUEST\n"; // required by Outlook
+            echo "BEGIN:VTIMEZONE\n";
+            echo "TZID:{$TZID}\n";
+            echo "X-ENTOURAGE-TZID:{$ENTOURAGE_TZID}\n"; //required by Outlook
+            echo "X-ENTOURAGE-CFTIMEZONE:{$ENTOURAGE_CFTIMEZONE}\n"; //required by Outlook
+            echo "BEGIN:STANDARD\n";
+            echo "DTSTART:20161101T020000\n"; //This value is not for the meeting. It is the beginning date of the current year when standard time started. 
+            echo "TZOFFSETFROM:{$TZOFFSETFROM_standard}\n";
+            echo "TZOFFSETTO:{$TZOFFSETTO_standard}\n";
+            echo "END:STANDARD\n";
+            echo "BEGIN:DAYLIGHT\n";
+            echo "DTSTART:20160308T020000\n";//This value isn't for the meeting. It's the start of DST for the current year. 
+            echo "TZOFFSETFROM:{$TZOFFSETFROM_daylight}\n";
+            echo "TZOFFSETTO:{$TZOFFSETTO_daylight}\n";
+            echo "END:DAYLIGHT\n";
+            echo "END:VTIMEZONE\n";
+            echo "BEGIN:VEVENT\n";
+            echo "ORGANIZER;CN=\"REL Northeast & Islands\":MAILTO:relneiinfo@edc.org\n";
+            echo "DESCRIPTION:{$description}\n";
+            echo "SUMMARY:{$title}\n";
+            echo "DTSTART;TZID={$TZID}:{$start}\n";
+            echo "DTEND;TZID={$TZID}:{$end}\n";
+            echo "UID:".date('Ymd').'T'.date('His')."-".rand()."-relnei.org\n"; // required by Outlook
+            echo "DTSTAMP:".date('Ymd').'T'.date('His').'Z'."\n"; // required by Outlook
+            echo "BEGIN:VALARM\n";
+            echo "ACTION:DISPLAY\n";
+            echo "DESCRIPTION:REMINDER\n";
+            echo "TRIGGER:-PT15M\n";
+            echo "END:VALARM\n";
+            echo "END:VEVENT\n";
+            echo "END:VCALENDAR\n";
 
-        echo "BEGIN:VCALENDAR\n";
-        echo "VERSION:2.0\n";
-        echo "PRODID:-//relnei.org//NONSGML {$title} //EN\n";
-        echo "METHOD:REQUEST\n"; // Required by Outlook
-        echo "BEGIN:VTIMEZONE\n";
-        echo "TZID:{$TZID}\n";
-        echo "X-ENTOURAGE-TZID:{$ENTOURAGE_TZID}\n"; //Required by Outlook
-        echo "X-ENTOURAGE-CFTIMEZONE:{$ENTOURAGE_CFTIMEZONE}\n"; //Required by Outlook
-        echo "BEGIN:STANDARD\n";
-        echo "DTSTART:20161101T020000\n"; //This value is not for the meeting. It is the beginning date of the current year when standard time started. 
-        echo "TZOFFSETFROM:{$TZOFFSETFROM_standard}\n";
-        echo "TZOFFSETTO:{$TZOFFSETTO_standard}\n";
-        echo "END:STANDARD\n";
-        echo "BEGIN:DAYLIGHT\n";
-        echo "DTSTART:20160308T020000\n";//This value isn't for the meeting. It's the start of DST for the current year. 
-        echo "TZOFFSETFROM:{$TZOFFSETFROM_daylight}\n";
-        echo "TZOFFSETTO:{$TZOFFSETTO_daylight}\n";
-        echo "END:DAYLIGHT\n";
-        echo "END:VTIMEZONE\n";
-        echo "BEGIN:VEVENT\n";
-        echo "ORGANIZER;CN=\"REL Northeast & Islands\":MAILTO:xxxxx@yyy.zzz\n";
-        echo "DESCRIPTION:{$description}\n";
-        echo "SUMMARY:{$title}\n";
-        echo "DTSTART;TZID={$TZID}:{$start}\n";
-        echo "DTEND;TZID={$TZID}:{$end}\n";
-        echo "UID:".date('Ymd').'T'.date('His')."-".rand()."-relnei.org\n"; // Required by Outlook
-        echo "DTSTAMP:".date('Ymd').'T'.date('His').'Z'."\n"; // Required by Outlook
-        echo "BEGIN:VALARM\n";
-        echo "ACTION:DISPLAY\n";
-        echo "DESCRIPTION:REMINDER\n";
-        echo "TRIGGER:-PT15M\n";
-        echo "END:VALARM\n";
-        echo "END:VEVENT\n";
-        echo "END:VCALENDAR\n";
+            exit;
 
-        exit;
-    }
+        } // end if there are event rows to process
+        
+    } // end isset if statement
 
-}
+} // end function create_ics
 
 add_action ('init', 'create_ics');
