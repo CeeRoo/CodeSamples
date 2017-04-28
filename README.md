@@ -10,6 +10,9 @@ Sites in WordPress/PHP:
 * www.beaconservices.com (WordPress)
 * my.solidworks.com (LAMP)
 
+Coldfusion/MySQL:
+* www.secondstreetindex.com
+
 These are the files in this repo representing some of my coding examples:
 
 * **hover-widget.css:** Custom SASS to style the right sidebar 'hover panel' widgets (www.relnei.org)
