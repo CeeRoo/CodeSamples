@@ -12,10 +12,9 @@ Sites in WordPress/PHP:
 
 These are the files in this repo representing some of my coding examples:
 
-* **D3-WP-horiz-graph.js:** Custom javascript to create a dynamic D3 data graphic based on a user-supplied CSV of data (www.relnei.org/how-much-do-teachers-evaluations-and-professional-learning-align.html)
 * **hover-widget.css:** Custom SASS to style the right sidebar 'hover panel' widgets (www.relnei.org)
 * **ics-dynamic.php:** Custom WordPress PHP plugin to generate a dynamic ICS file for users who register for a given event date and time. The plugin has been customized to generate an ICS file which will open and save in all email clients. (www.relnei.org)
-* **single-story.php:** Custom WordPress template that integrates Bootstrap, the Advanced Custom Fields repeater plugin, and jQuery 'quick scroll' animation (www.relnei.org/how-much-do-teachers-evaluations-and-professional-learning-align.html)
+* **single-story.php:** Custom WordPress template that integrates Bootstrap, the Advanced Custom Fields repeater plugin, AJAX, and jQuery 'quick scroll' animation (www.relnei.org/how-much-do-teachers-evaluations-and-professional-learning-align.html)
 * **widget-publications.php:** WordPress PHP widget that displays the most recent publication via custom CSS3 and MySQL (www.relnei.org)
 * **widget-WP-videocap.mov:** Twenty second screen cap video showing the behavior for the included widget files
 
