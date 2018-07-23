@@ -1,6 +1,6 @@
 # Code Samples
 Sites in WordPress/PHP:
-* www.relnei.org (WordPress, responsive)
+* www.relnei.org (WordPress, responsive, since converted to ASP.net in 2017)
 * www.relnei.org/how-much-do-teachers-evaluations-and-professional-learning-align.html  
    (Wordpress custom responsive 'Story' template with D3 chart)
 * www.wheatoncollege.edu/giving (WordPress, responsive)
@@ -10,8 +10,6 @@ Sites in WordPress/PHP:
 * www.beaconservices.com (WordPress)
 * my.solidworks.com (LAMP)
 
-Coldfusion/MySQL:
-* www.secondstreetindex.com
 
 These are the files in this repo representing some of my coding examples:
 
