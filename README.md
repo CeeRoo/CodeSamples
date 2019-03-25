@@ -1,6 +1,6 @@
 # Code Samples
 Startup Commercial Real Estate Valuation (built using Bootstrap, SASS, gulp, juery, MySQL, Coldfusion):
-* zaxia.us
+* https://zaxia.us
 
 Sites in WordPress/PHP:
 * www.cycletownstudio.com (WordPress, Divi theme)
