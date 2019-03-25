@@ -1,9 +1,10 @@
 # Code Samples
-Startup Commercial Real Estate Valuation Site:
-* https://zaxia.us
+Startup Commercial Real Estate Valuation (built using Bootstrap, SASS, gulp, juery, MySQL, Coldfusion):
+* zaxia.us
 
 Sites in WordPress/PHP:
-* www.relnei.org (WordPress, responsive, since converted to ASP.net in 2017)
+* www.cycletownstudio.com (WordPress, Divi theme)
+* www.relnei.org (WordPress, 3 yr project, responsive, since converted to ASP.net)
 * www.relnei.org/how-much-do-teachers-evaluations-and-professional-learning-align.html  
    (Wordpress custom responsive 'Story' template with D3 chart)
 * www.wheatoncollege.edu/giving (WordPress, responsive)
