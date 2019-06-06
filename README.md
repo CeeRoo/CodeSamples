@@ -1,5 +1,5 @@
 # Code Samples
-Startup Commercial Real Estate Valuation (built using Bootstrap, HTML5, SASS, gulp, juery, MySQL, Coldfusion):
+Startup Commercial Real Estate Valuation (built using Bootstrap, HTML5, SASS, gulp, jQuery/javascript, MySQL, Coldfusion):
 * https://zaxia.us
 
 Sites in WordPress/PHP:
